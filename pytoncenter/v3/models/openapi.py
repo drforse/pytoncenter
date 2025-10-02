@@ -338,13 +338,17 @@ class ForwardPayloadValueTextComment(BaseModel):
     text: str = Field(..., title="Text")
 
 
-class ForwardPayloadValue(BaseModel):
+class PayloadTextCommentValue(BaseModel):
     text_comment: ForwardPayloadValueTextComment = Field(..., title="Text Comment")
+
+
+class ForwardPayloadEmptyCellValue(BaseModel):
+    empty_cell: str = Field(..., title="Empty Cell")
 
 
 class ForwardPayload(BaseModel):
     type: str = Field(..., title="Type")
-    value: ForwardPayloadValue = Field(..., title="Value")
+    value: Union[PayloadTextCommentValue, ForwardPayloadEmptyCellValue] = Field(..., title="Value")
 
 
 class JettonNotifyMessageContentDecodedDataAmount(BaseModel):
@@ -363,11 +367,26 @@ class JettonNotifyMessageContentDecoded(BaseModel):
     data: JettonNotifyMessageContentDecodedData = Field(..., title="Data")
 
 
+class BounceMessageContentDecodedData(BaseModel):
+    payload: PayloadTextCommentValue = Field(..., title="Payload")
+
+
+class BounceMessageContentDecoded(BaseModel):
+    type: Literal["bounce"] = Field(default="bounce", title="Type")
+    data: BounceMessageContentDecodedData = Field(..., title="Data")
+
+
+class EmptyCellMessageContentDecoded(BaseModel):
+    type: Literal["empty_cell"] = Field(default="empty_cell", title="Type")
+    data: str = Field(..., title="Data")
+
+
 class MessageContent(BaseModel):
     hash: str = Field(..., title="Hash")
     body: str = Field(..., title="Body")
-    decoded: Optional[Union[TextComment, BinaryComment, JettonNotifyMessageContentDecoded]] = Field(..., title="Decoded")
-    forward_payload: Optional[ForwardPayload] = Field(..., title="Forward Payload")
+    decoded: Optional[Union[
+        TextComment, BinaryComment, JettonNotifyMessageContentDecoded, BounceMessageContentDecoded, EmptyCellMessageContentDecoded]] = Field(
+        ..., title="Decoded")
 
 
 class RunGetMethodRequest(BaseModel):
