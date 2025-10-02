@@ -334,21 +334,6 @@ class MasterchainInfo(BaseModel):
     last: Block
 
 
-class JettonNotifyMessageContentDecodedDataAmount(BaseModel):
-    len: int = Field(..., title="Len")
-    type: str = Field(..., title="Type")
-    value: int = Field(..., title="Value")
-
-
-class JettonNotifyMessageContentDecodedData(BaseModel):
-    amount: JettonNotifyMessageContentDecodedDataAmount = Field(..., title="Amount")
-
-
-class JettonNotifyMessageContentDecoded(BaseModel):
-    type: Literal["jetton_notify"] = Field(default="jetton_notify", title="Type")
-    data: JettonNotifyMessageContentDecodedData = Field(..., title="Data")
-
-
 class ForwardPayloadValueTextComment(BaseModel):
     text: str = Field(..., title="Text")
 
@@ -360,6 +345,22 @@ class ForwardPayloadValue(BaseModel):
 class ForwardPayload(BaseModel):
     type: str = Field(..., title="Type")
     value: ForwardPayloadValue = Field(..., title="Value")
+
+
+class JettonNotifyMessageContentDecodedDataAmount(BaseModel):
+    len: int = Field(..., title="Len")
+    type: str = Field(..., title="Type")
+    value: int = Field(..., title="Value")
+
+
+class JettonNotifyMessageContentDecodedData(BaseModel):
+    amount: JettonNotifyMessageContentDecodedDataAmount = Field(..., title="Amount")
+    forward_payload: Optional[ForwardPayload] = Field(..., title="Forward Payload")
+
+
+class JettonNotifyMessageContentDecoded(BaseModel):
+    type: Literal["jetton_notify"] = Field(default="jetton_notify", title="Type")
+    data: JettonNotifyMessageContentDecodedData = Field(..., title="Data")
 
 
 class MessageContent(BaseModel):
