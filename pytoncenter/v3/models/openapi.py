@@ -351,14 +351,14 @@ class ForwardPayload(BaseModel):
     value: Union[PayloadTextCommentValue, ForwardPayloadEmptyCellValue] = Field(..., title="Value")
 
 
-class JettonNotifyMessageContentDecodedDataAmount(BaseModel):
+class MessageContentDecodedDataAmount(BaseModel):
     len: int = Field(..., title="Len")
     type: str = Field(..., title="Type")
     value: int = Field(..., title="Value")
 
 
 class JettonNotifyMessageContentDecodedData(BaseModel):
-    amount: JettonNotifyMessageContentDecodedDataAmount = Field(..., title="Amount")
+    amount: MessageContentDecodedDataAmount = Field(..., title="Amount")
     forward_payload: Optional[ForwardPayload] = Field(..., title="Forward Payload")
 
 
@@ -381,11 +381,46 @@ class EmptyCellMessageContentDecoded(BaseModel):
     data: str = Field(..., title="Data")
 
 
+class ExcessMessageContentDecodedData(BaseModel):
+    query_id: int = Field(..., title="Query Id")
+
+
+class ExcessMessageContentDecoded(BaseModel):
+    type: Literal["excess"] = Field(default="excess", title="Type")
+    data: ExcessMessageContentDecodedData = Field(..., title="Data")
+
+
+class DestinationAddressValue(BaseModel):
+    address: str = Field(..., title="Address")
+    anycast: str = Field(..., title="Anycast")
+    type: str = Field(..., title="Type")
+    workchain_id: int = Field(..., title="Workchain Id")
+
+
+class DestinationAddresses(BaseModel):
+    internal_address: DestinationAddressValue = Field(..., title="Internal Address")
+
+
+class JettonTransferMessageContentDecodedData(BaseModel):
+    amount: MessageContentDecodedDataAmount = Field(..., title="Amount")
+    custom_payload: str = Field(..., title="Custom Payload")
+    destination: DestinationAddresses = Field(..., title="Destination")
+    forward_payload: Optional[ForwardPayload] = Field(..., title="Forward Payload")
+    forward_ton_amount: MessageContentDecodedDataAmount = Field(..., title="Forward Ton Amount")
+    query_id: int = Field(..., title="Query Id")
+    response_destination: DestinationAddresses = Field(..., title="Response Destination")
+
+
+class JettonTransferMessageContentDecoded(BaseModel):
+    type: Literal["jetton_transfer"] = Field(default="jetton_transfer", title="Type")
+    data: JettonTransferMessageContentDecodedData = Field(..., title="Data")
+
+
 class MessageContent(BaseModel):
     hash: str = Field(..., title="Hash")
     body: str = Field(..., title="Body")
     decoded: Optional[Union[
-        TextComment, BinaryComment, JettonNotifyMessageContentDecoded, BounceMessageContentDecoded, EmptyCellMessageContentDecoded]] = Field(
+        TextComment, BinaryComment, JettonNotifyMessageContentDecoded, BounceMessageContentDecoded, EmptyCellMessageContentDecoded, ExcessMessageContentDecoded, JettonTransferMessageContentDecoded]] = Field(
         ..., title="Decoded")
 
 
