@@ -416,11 +416,48 @@ class JettonTransferMessageContentDecoded(BaseModel):
     data: JettonTransferMessageContentDecodedData = Field(..., title="Data")
 
 
+class CellReferenceDecoded(BaseModel):
+    cell_reference: dict = Field(..., title="Cell Reference")  # TODO: define structure
+
+
+class OpMessageBody(BaseModel):
+    type: str = Field(..., title="Type")
+    value: Union[PayloadTextCommentValue, CellReferenceDecoded] = Field(..., title="Value")
+
+
+class OpMessage(BaseModel):
+    body: OpMessageBody = Field(..., title="Body")
+    info: dict # TODO: define structure
+
+
+class OpMessageWrap(BaseModel):
+    mode: int = Field(..., title="Mode")
+    msg: OpMessage
+
+
+class OpMessages(BaseModel):
+    msg_1: OpMessageWrap
+
+
+class Op(BaseModel):
+    msgs: Union[OpMessages, dict] = Field(..., title="Msgs")  # TODO: define structure
+
+
+class WalletSignedV4MessageContentDecodedData(BaseModel):
+    msg_seqno: int
+    op: Op = Field(..., title="Op")
+
+
+class WalletSignedV4MessageContentDecoded(BaseModel):
+    type: Literal["wallet_signed_v4"] = Field(default="wallet_signed_v4", title="Type")
+    data: WalletSignedV4MessageContentDecodedData = Field(..., title="Data")
+
+
 class MessageContent(BaseModel):
     hash: str = Field(..., title="Hash")
     body: str = Field(..., title="Body")
     decoded: Optional[Union[
-        TextComment, BinaryComment, JettonNotifyMessageContentDecoded, BounceMessageContentDecoded, EmptyCellMessageContentDecoded, ExcessMessageContentDecoded, JettonTransferMessageContentDecoded]] = Field(
+        TextComment, BinaryComment, JettonNotifyMessageContentDecoded, BounceMessageContentDecoded, EmptyCellMessageContentDecoded, ExcessMessageContentDecoded, JettonTransferMessageContentDecoded, WalletSignedV4MessageContentDecoded]] = Field(
         ..., title="Decoded")
 
 
