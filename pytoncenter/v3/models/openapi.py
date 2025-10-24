@@ -457,7 +457,7 @@ class MessageContent(BaseModel):
     hash: str = Field(..., title="Hash")
     body: str = Field(..., title="Body")
     decoded: Optional[Union[
-        TextComment, BinaryComment, JettonNotifyMessageContentDecoded, BounceMessageContentDecoded, EmptyCellMessageContentDecoded, ExcessMessageContentDecoded, JettonTransferMessageContentDecoded, WalletSignedV4MessageContentDecoded]] = Field(
+        TextComment, BinaryComment, JettonNotifyMessageContentDecoded, BounceMessageContentDecoded, EmptyCellMessageContentDecoded, ExcessMessageContentDecoded, JettonTransferMessageContentDecoded, WalletSignedV4MessageContentDecoded, dict]] = Field(
         ..., title="Decoded")
 
 
